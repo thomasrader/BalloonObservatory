@@ -1,3 +1,4 @@
+//	THIS IS A TEST, IN A REAL EMERGENCY YOU WOULD BE SCREWED ALREADY	//
 //	USER INCLUDES	//
 #include "DynamixelMX12.h"
 //----------------------------------------------------------------------//
