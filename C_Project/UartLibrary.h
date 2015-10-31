@@ -23,6 +23,7 @@
 #include "soc_cv_av/socal/hps.h"
 #include "soc_cv_av/socal/alt_gpio.h"
 #include "hps_0.h"
+
 //---------------------------------------------------------------------//
 //	FPGA UART BLOCK ADDRESSES	//
 
@@ -42,7 +43,7 @@
 #define WRITE_STOP_FLAGS	0b1001	// MUX write, Read Enable, Write Enable, Chip Enable
 
 #define READ_TOGGLE_ON		0b0101
-#define READ_TOGGLE_OFF		0b0011			
+#define READ_TOGGLE_OFF		0b0001			
 
 #define PACKET_OVERHEAD 	0x05
 //---------------------------------------------------------------------//

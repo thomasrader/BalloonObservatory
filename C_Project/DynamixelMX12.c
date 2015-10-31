@@ -1,4 +1,3 @@
-//	THIS IS A TEST, IN A REAL EMERGENCY YOU WOULD BE SCREWED ALREADY	//
 //	USER INCLUDES	//
 #include "DynamixelMX12.h"
 //----------------------------------------------------------------------//
@@ -13,7 +12,7 @@ void Set_Rate(uint8_t ID, int Rate, uint8_t Error_array[])
 	uint8_t Check_sum;
 	Rate_H = (Rate >> 8) & 0xFF;
 	Rate_L = Rate & 0xFF;
-	Checksum = (~(ID + MX_SPEED_LENGTH + MX_WRITE_DATA + MX_GOAL_SPEED_L + Rate_L + Rate_H)) & 0xFF;
+	Check_sum = (~(ID + MX_SPEED_LENGTH + MX_WRITE_DATA + MX_GOAL_SPEED_L + Rate_L + Rate_H)) & 0xFF;
 	uint8_t Data_packet[9]	= {MX_START,MX_START,ID,MX_SPEED_LENGTH,MX_WRITE_DATA,MX_GOAL_SPEED_L,Rate_L,Rate_H,Check_sum};
 	
 	UART_WriteRead(Data_packet, sizeof(Data_packet), ONE_BYTE_READ, Error_array);
@@ -46,21 +45,21 @@ void Change_Mode(uint8_t ID, servomode Set_mode, uint8_t Error_array[])
 	
 	switch(Set_mode)
 	{
-		case(servomode.MULTI):
+		case(MULTI):
 			Mode_L = 0xFF;
 			Mode_H = 0x0F;
 			Check_sum = (~(ID + MX_GOAL_LENGTH + MX_WRITE_DATA + MX_CCW_ANGLE_LIMIT_L + Mode_L + Mode_H + Mode_L + Mode_H)) & 0xFF;
-			uint8_t Data_packet[11] = {MX_START,MX_START,ID,MX_CCW_CW_LENGTH,MX_WRITE_DATA,MX_CW_ANGLE_LIMIT_L,Mode_L,Mode_H,Mode_L,Mode_H,Check_sum};
-			UART_WriteRead(Data_packet, sizeof(Data_packet), ONE_BYTE_READ, Error_array);
+			uint8_t Data_packet_1[11] = {MX_START,MX_START,ID,MX_CCW_CW_LENGTH,MX_WRITE_DATA,MX_CW_ANGLE_LIMIT_L,Mode_L,Mode_H,Mode_L,Mode_H,Check_sum};
+			UART_WriteRead(Data_packet_1, sizeof(Data_packet_1), ONE_BYTE_READ, Error_array);
 			break;
-		case(servomode.WHEEL):
+		case(WHEEL):
 			Mode_L = 0x0;
 			Mode_H = 0x0;
 			Check_sum = (~(ID + MX_GOAL_LENGTH + MX_WRITE_DATA + MX_CCW_ANGLE_LIMIT_L + Mode_L + Mode_H + Mode_L + Mode_H)) & 0xFF;
-			uint8_t Data_packet[11] = {MX_START,MX_START,ID,MX_CCW_CW_LENGTH,MX_WRITE_DATA,MX_CW_ANGLE_LIMIT_L,Mode_L,Mode_H,Mode_L,Mode_H,Check_sum};
-			UART_WriteRead(Data_packet, sizeof(Data_packet), ONE_BYTE_READ, Error_array);
+			uint8_t Data_packet_2[11] = {MX_START,MX_START,ID,MX_CCW_CW_LENGTH,MX_WRITE_DATA,MX_CW_ANGLE_LIMIT_L,Mode_L,Mode_H,Mode_L,Mode_H,Check_sum};
+			UART_WriteRead(Data_packet_2, sizeof(Data_packet_2), ONE_BYTE_READ, Error_array);
 			break;
-		case(servomode.JOINT):
+		case(JOINT):
 			break;
 		default:
 			break;
@@ -74,9 +73,11 @@ void Change_Mode(uint8_t ID, servomode Set_mode, uint8_t Error_array[])
 */
 int Get_Position(uint8_t ID, uint8_t Data_array[])
 {
-	Check_sum = (~(ID + MX_GOAL_LENGTH + MX_READ_DATA + MX_PRESENT_POSITION_L + MX_BYTE_READ_POS)) & 0xFF;
-	uint8_t Data_packet[5] = {ID, MX_GOAL_LENGTH, MX_READ_DATA, MX_PRESENT_POSITION_L, MX_BYTE_READ_POS};
+	uint8_t Check_sum = (~(ID + MX_GOAL_LENGTH + MX_READ_DATA + MX_PRESENT_POSITION_L + MX_BYTE_READ_POS)) & 0xFF;
+	uint8_t Data_packet[8] = {MX_START,MX_START,ID, MX_GOAL_LENGTH, MX_READ_DATA, MX_PRESENT_POSITION_L, MX_BYTE_READ_POS, Check_sum};
 	
 	UART_WriteRead(Data_packet, sizeof(Data_packet), TWO_BYTE_READ, Data_array);
+	
+	return 0;
 }
 //----------------------------------------------------------------------//

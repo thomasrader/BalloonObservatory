@@ -15,9 +15,6 @@
 #include "soc_cv_av/socal/hps.h"
 #include "soc_cv_av/socal/alt_gpio.h"
 #include "hps_0.h"
-//----------------------------------------------------------------------//
-//	USER DEFINES	//
-enum servomode	{WHEEL,MULTI,JOINT};
 
 #define TWO_BYTE_READ	2
 #define ONE_BYTE_READ	1
@@ -144,6 +141,10 @@ enum servomode	{WHEEL,MULTI,JOINT};
 #define LOCK                        1
 //----------------------------------------------------------------------//
 // FUNCTION PROTOTYPE DECLARATIONS
+
+//----------------------------------------------------------------------//
+//	USER DEFINES	//
+typedef enum {WHEEL, MULTI, JOINT} servomode;
 
 void Set_Position(uint8_t ID, int Position, uint8_t Error_array[]);
 void Set_Rate(uint8_t ID, int Rate, uint8_t Error_array[]);

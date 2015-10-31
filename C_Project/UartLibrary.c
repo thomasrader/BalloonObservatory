@@ -38,6 +38,8 @@ void UART_Map(void* virtual_base)
 
 int UART_Write(uint8_t data)
 {
+	*(uint32_t *)Flag_reg = WRITE_STOP_FLAGS;
+	
 	*(uint32_t *) Addr_reg =  STATUS_ADDR;
 	
 	uint8_t status;
@@ -69,10 +71,11 @@ void UART_WriteRead(uint8_t data[], int Write_length, int Read_length, uint8_t D
 	// Write Bytes
 	int i;
 	volatile uint8_t status;
-	for(i = 0; i< Write_length +1 ; i++)
+	for(i = 0; i < (Write_length + 1) ; i++)
 	{
 		UART_Write(data[i]);
 	}
+	
 	
 	// Read Bytes
 	for(i = 0; i<Read_length+PACKET_OVERHEAD; i++)
@@ -80,11 +83,14 @@ void UART_WriteRead(uint8_t data[], int Write_length, int Read_length, uint8_t D
 		*(uint32_t *)Addr_reg = STATUS_ADDR;
 		*(uint32_t *)Flag_reg = READ_TOGGLE_ON;
 		*(uint32_t *)Flag_reg = READ_TOGGLE_OFF;
+		
+		int Time_out_counter = 0;
 		do 	// check RX busy flag
 		{
-			printf("Checking RxRdy\n");
+			Time_out_counter++;
+			printf("Checking RxRdy. %d Try\n", Time_out_counter);
 			status = *(uint32_t *)Data_out_reg;
-		}while(!(status & 0x02));
+		}while(!(status & 0x02)  && Time_out_counter < 100);
 		
 		*(uint32_t *) Addr_reg =  DATA_ADDR;
 		Data_array[i] = *(uint32_t *) Data_out_reg;
