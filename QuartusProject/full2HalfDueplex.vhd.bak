@@ -1,0 +1,14 @@
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+
+entity full2HalfDueplex is
+    Port ( Control : in  STD_LOGIC;
+           Tx      : in  STD_LOGIC_VECTOR (3 downto 0);
+           Rx      : in  STD_LOGIC_VECTOR (3 downto 0);
+           Data    : out STD_LOGIC_VECTOR (3 downto 0));
+end full2HalfDueplex;
+
+architecture full2HalfDueplex_arch of full2HalfDueplex  is
+begin
+    Data <= Tx when (SEL = '1') else Rx;
+end architecture;
