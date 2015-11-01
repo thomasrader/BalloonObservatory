@@ -4,9 +4,9 @@
 //	USER DEFINES	//
 
 #define SERVO1	0x01
-#define ROTATE_DOWN		0x1050
-#define CONTACT_SWITCH_ADDR	0x0;
-#define CONTACT_SWITCH_DDR_ADDR	0x4;
+#define ROTATE_DOWN		1050
+#define CONTACT_SWITCH_ADDR	0x0
+#define CONTACT_SWITCH_DDR_ADDR	0x4
 #define STOP	0x0
 //-----------------------------------------------------------------------//
 //	USER INCLUDES	//
@@ -32,5 +32,9 @@
 #include "soc_cv_av/socal/alt_gpio.h"
 #include "hps_0.h"
 //----------------------------------------------------------------------//
+//	FUNCTION PROTOTYPES	//
+
+void Get_Zero_Pos(void * Contact_Addr, void * Contact_DDR);
+
 
 #endif

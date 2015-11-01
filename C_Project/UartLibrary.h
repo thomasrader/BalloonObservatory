@@ -11,6 +11,7 @@
 #define HW_REGS_BASE ( ALT_STM_OFST )
 #define HW_REGS_SPAN ( 0x04000000 )
 #define HW_REGS_MASK ( HW_REGS_SPAN - 1 )
+
 //----------------------------------------------------------------------//
 //	SYSTEM INCLUDES	//
 
@@ -31,6 +32,7 @@
 #define UART_DATA_OUT_REG 		0x60
 #define	UART_FLAG_REG			0x40
 #define	UART_ADDR_REG			0x20
+
 //---------------------------------------------------------------------//
 //	UART BLOCK	//
 
@@ -39,13 +41,15 @@
 #define STATUS_ADDR			0x01
 #define DATA_ADDR			0x00
 
-#define WRITE_START_FLAGS	0b1011	// MUX write, Read Enable, Write Enable, Chip Enable
-#define WRITE_STOP_FLAGS	0b1001	// MUX write, Read Enable, Write Enable, Chip Enable
+#define WRITE_START_FLAGS	            0b1011	// MUX write, Read Enable, Write Enable, Chip Enable
+#define WRITE_STOP_FLAGS	                0b1001	// MUX write, Read Enable, Write Enable, Chip Enable
+#define FINAL_WRITE_STOP_FLAGS	    0b0001	// MUX write, Read Enable, Write Enable, Chip Enable
 
 #define READ_TOGGLE_ON		0b0101
 #define READ_TOGGLE_OFF		0b0001			
 
 #define PACKET_OVERHEAD 	0x05
+
 //---------------------------------------------------------------------//
 // FUNCTION PROTOTYPE DECLARATIONS	//
 

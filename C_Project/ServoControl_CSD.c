@@ -3,6 +3,9 @@
 #include "DynamixelMX12.h"
 //-----------------------------------------------------------------------//
 
+//GLOBAL VARIABLES
+uint8_t Data_out[15];
+
 int main() {
 	
 	printf("Starting\n");
@@ -33,10 +36,34 @@ int main() {
 	//----------------------------------------------------------------------//
 	
 	// LOCAL VARIABLES	//
-	uint8_t Data_out[15];
+	
 	//----------------------------------------------------------------------//
 	//	TEST PROCEDURE CODE	//
+	//while(1){
+		//printf("Data: %d: \n", *(uint32_t *) Contact_Addr);
+	//}
 	
+	Change_Mode(SERVO1, WHEEL, Data_out);
+	
+	printf("Set Servo to wheel mode\n");
+	
+	Get_Zero_Pos(Contact_Addr, Contact_DDR);
+	
+	usleep(3000*1000);
+	
+	Change_Mode(SERVO1, MULTI, Data_out);
+	
+	Set_Position(SERVO1, 1400, Data_out);
+	
+	usleep(3000*1000);
+	
+	Change_Mode(SERVO1, WHEEL, Data_out);
+	
+	Set_Rate(SERVO1, 50, Data_out);
+	
+	usleep(3000*1000);
+	
+	Set_Rate(SERVO1, 0, Data_out);
 	
 	//----------------------------------------------------------------------//
 	//	CLEAN UP MEMORY MAPPING	//
@@ -54,15 +81,18 @@ int main() {
 /* Get_Zero_Pos will return the position to its zero angle position
 *	
 */
-void Get_Zero_Pos()
+void Get_Zero_Pos(void * Contact_Addr, void * Contact_DDR)
 {
-	*(void *) Contact_DDR = *(void *) Contact_DDR & 0xFB;
-	Set_Rate(SERVO1, ROTATE_DOWN, Data_array);
+	*(uint32_t *) Contact_DDR = *(uint32_t  *) Contact_DDR & 0xFB;
+	Set_Rate(SERVO1, ROTATE_DOWN, Data_out);
 	uint8_t Contact_status;
+	printf("Stated Turning Motor\n");
 	do {
-		Contact_status = *(void *) Contact_addr;
-	} while(!(Contact_status) & 0x03);
+		Contact_status = *(uint32_t *) Contact_Addr;
+	} while((Contact_status & 0x04));
 	
-	Set_Rate(SERVO1, STOP, Data_array);
+	printf("Stated Turning Motor %d\n",  (Contact_status));
+	
+	Set_Rate(SERVO1, STOP, Data_out);
 }
 

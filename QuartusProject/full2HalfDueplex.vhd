@@ -3,9 +3,9 @@ use IEEE.STD_LOGIC_1164.ALL;
 
 entity full2HalfDueplex is
     Port ( Control : in  	STD_LOGIC;
-           Tx      : in  	STD_LOGIC_VECTOR (3 downto 0);
-           Rx      : out  	STD_LOGIC_VECTOR (3 downto 0);
-           Data    : inout STD_LOGIC_VECTOR (3 downto 0));
+           Tx      : in  	STD_LOGIC;
+           Rx      : out  	STD_LOGIC;
+           Data    : inout STD_LOGIC);
 end full2HalfDueplex;
 
 architecture full2HalfDueplex_arch of full2HalfDueplex  is

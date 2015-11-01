@@ -133,7 +133,7 @@
 #define BROADCAST_ID                254
 #define MX_START                    255
 #define MX_CCW_AL_L                 255 
-#define MX_CCW_AL_H                 3
+#define MX_CCW_AL_H                 15
 #define TIME_OUT                    10         // Este parametro depende de la velocidad de transmision
 #define TX_DELAY_TIME				400        // Este parametro depende de la velocidad de transmision - pero pueden ser cambiados para mayor velocidad.
 #define Tx_MODE                     1

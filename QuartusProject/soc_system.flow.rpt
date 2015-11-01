@@ -1,5 +1,5 @@
 Flow report for soc_system
-Thu Oct 29 15:10:14 2015
+Sat Oct 31 17:47:10 2015
 Quartus II 64-Bit Version 14.1.0 Build 186 12/03/2014 SJ Web Edition
 
 
@@ -41,15 +41,15 @@ agreement for further details.
 +------------------------------------------------------------------------------+
 ; Flow Summary                                                                 ;
 +---------------------------------+--------------------------------------------+
-; Flow Status                     ; Successful - Thu Oct 29 15:09:09 2015      ;
+; Flow Status                     ; Successful - Sat Oct 31 17:46:03 2015      ;
 ; Quartus II 64-Bit Version       ; 14.1.0 Build 186 12/03/2014 SJ Web Edition ;
 ; Revision Name                   ; soc_system                                 ;
 ; Top-level Entity Name           ; ghrd                                       ;
 ; Family                          ; Cyclone V                                  ;
 ; Device                          ; 5CSEMA4U23C6                               ;
 ; Timing Models                   ; Final                                      ;
-; Logic utilization (in ALMs)     ; 3,158 / 15,880 ( 20 % )                    ;
-; Total registers                 ; 4632                                       ;
+; Logic utilization (in ALMs)     ; 3,141 / 15,880 ( 20 % )                    ;
+; Total registers                 ; 4607                                       ;
 ; Total pins                      ; 230 / 314 ( 73 % )                         ;
 ; Total virtual pins              ; 0                                          ;
 ; Total block memory bits         ; 526,336 / 2,764,800 ( 19 % )               ;
@@ -68,7 +68,7 @@ agreement for further details.
 +-------------------+---------------------+
 ; Option            ; Setting             ;
 +-------------------+---------------------+
-; Start date & time ; 10/29/2015 15:02:07 ;
+; Start date & time ; 10/31/2015 17:38:29 ;
 ; Main task         ; Compilation         ;
 ; Revision Name     ; soc_system          ;
 +-------------------+---------------------+
@@ -79,7 +79,7 @@ agreement for further details.
 +---------------------------------------+--------------------------------------------------------------------------+---------------+--------------------------------+------------+
 ; Assignment Name                       ; Value                                                                    ; Default Value ; Entity Name                    ; Section Id ;
 +---------------------------------------+--------------------------------------------------------------------------+---------------+--------------------------------+------------+
-; COMPILER_SIGNATURE_ID                 ; 48599604656277.144615252111048                                           ; --            ; --                             ; --         ;
+; COMPILER_SIGNATURE_ID                 ; 48599604656277.144633470303144                                           ; --            ; --                             ; --         ;
 ; ECO_REGENERATE_REPORT                 ; On                                                                       ; Off           ; --                             ; --         ;
 ; FITTER_EFFORT                         ; Fast Fit                                                                 ; Auto Fit      ; --                             ; --         ;
 ; HPS_ISW_FILE                          ; soc_system/synthesis/submodules/sequencer/alt_types.pre.h                ; --            ; soc_system_hps_0_hps_io_border ; --         ;
@@ -136,11 +136,11 @@ agreement for further details.
 +---------------------------+--------------+-------------------------+---------------------+------------------------------------+
 ; Module Name               ; Elapsed Time ; Average Processors Used ; Peak Virtual Memory ; Total CPU Time (on all processors) ;
 +---------------------------+--------------+-------------------------+---------------------+------------------------------------+
-; Analysis & Synthesis      ; 00:01:00     ; 1.0                     ; 1073 MB             ; 00:01:23                           ;
-; Fitter                    ; 00:02:35     ; 1.0                     ; 2612 MB             ; 00:03:45                           ;
-; Assembler                 ; 00:00:12     ; 1.0                     ; 811 MB              ; 00:00:12                           ;
-; TimeQuest Timing Analyzer ; 00:01:02     ; 1.0                     ; 1488 MB             ; 00:01:02                           ;
-; Total                     ; 00:04:49     ; --                      ; --                  ; 00:06:22                           ;
+; Analysis & Synthesis      ; 00:01:06     ; 1.0                     ; 1096 MB             ; 00:01:22                           ;
+; Fitter                    ; 00:02:57     ; 1.0                     ; 2612 MB             ; 00:03:45                           ;
+; Assembler                 ; 00:00:14     ; 1.0                     ; 811 MB              ; 00:00:12                           ;
+; TimeQuest Timing Analyzer ; 00:01:04     ; 1.0                     ; 1479 MB             ; 00:01:02                           ;
+; Total                     ; 00:05:21     ; --                      ; --                  ; 00:06:21                           ;
 +---------------------------+--------------+-------------------------+---------------------+------------------------------------+
 
 
