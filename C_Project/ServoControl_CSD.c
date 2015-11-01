@@ -18,7 +18,8 @@ int main() {
 	}
 
 	virtual_base = mmap( NULL, HW_REGS_SPAN, ( PROT_READ | PROT_WRITE ), MAP_SHARED, fd, HW_REGS_BASE );
-
+	void* Contact_Addr	= virtual_base + ((unsigned long )( ALT_LWFPGASLVS_OFST + CONTACT_SWITCH_ADDR ) & ( unsigned long)( HW_REGS_MASK ));
+	void* Contact_DDR	= virtual_base + ((unsigned long )( ALT_LWFPGASLVS_OFST + CONTACT_SWITCH_DDR_ADDR ) & ( unsigned long)( HW_REGS_MASK ));
 	if( virtual_base == MAP_FAILED ) {
 		printf( "ERROR: mmap() failed...\n" );
 		close( fd );
@@ -34,15 +35,8 @@ int main() {
 	// LOCAL VARIABLES	//
 	uint8_t Data_out[15];
 	//----------------------------------------------------------------------//
-	//	FUNCTIONAL CODE	//
+	//	TEST PROCEDURE CODE	//
 	
-	while(1)
-	{
-		Set_Position(SERVO1,200,Data_out);
-		usleep(10000);
-		Get_Position(SERVO1,Data_out);
-		printf("DataOut: %s\n",Data_out);
-	}
 	
 	//----------------------------------------------------------------------//
 	//	CLEAN UP MEMORY MAPPING	//
@@ -57,3 +51,18 @@ int main() {
 	//----------------------------------------------------------------------//
 	return( 0 );
 }
+/* Get_Zero_Pos will return the position to its zero angle position
+*	
+*/
+void Get_Zero_Pos()
+{
+	*(void *) Contact_DDR = *(void *) Contact_DDR & 0xFB;
+	Set_Rate(SERVO1, ROTATE_DOWN, Data_array);
+	uint8_t Contact_status;
+	do {
+		Contact_status = *(void *) Contact_addr;
+	} while(!(Contact_status) & 0x03);
+	
+	Set_Rate(SERVO1, STOP, Data_array);
+}
+
