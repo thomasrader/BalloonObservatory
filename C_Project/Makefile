@@ -4,7 +4,7 @@ TARGET = Uart_Test
 #
 CROSS_COMPILE = arm-linux-gnueabihf-
 CFLAGS = -static -g -Wall  -I${SOCEDS_DEST_ROOT}/ip/altera/hps/altera_hps/hwlib/include
-LDFLAGS =  -g -Wall  
+LDFLAGS =  -g -Wall -lm 
 CC = $(CROSS_COMPILE)gcc
 ARCH= arm
 
