@@ -293,7 +293,8 @@ begin
     end if;
   end if;
 end process interrupt_flags;
- 
+
+--Our addtion 
 bit_period_reg <= to_unsigned(50,14);
  
 baud_rate_registers:

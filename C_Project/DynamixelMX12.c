@@ -49,14 +49,14 @@ void Change_Mode(uint8_t ID, servomode Set_mode, uint8_t Error_array[])
 			Mode_L = 0xFF;
 			Mode_H = 0x0F;
 			Check_sum = (~(ID + MX_GOAL_LENGTH + MX_WRITE_DATA + MX_CCW_ANGLE_LIMIT_L + Mode_L + Mode_H + Mode_L + Mode_H)) & 0xFF;
-			uint8_t Data_packet_1[11] = {MX_START,MX_START,ID,MX_CCW_CW_LENGTH,MX_WRITE_DATA,MX_CW_ANGLE_LIMIT_L,Mode_L,Mode_H,Mode_L,Mode_H,Check_sum};
+			uint8_t Data_packet_1[11] = {MX_START,MX_START,ID,MX_GOAL_LENGTH,MX_WRITE_DATA,MX_CW_ANGLE_LIMIT_L,Mode_L,Mode_H,Mode_L,Mode_H,Check_sum};
 			UART_WriteRead(Data_packet_1, sizeof(Data_packet_1), ONE_BYTE_READ, Error_array);
 			break;
 		case(WHEEL):
 			Mode_L = 0x0;
 			Mode_H = 0x0;
 			Check_sum = (~(ID + MX_GOAL_LENGTH + MX_WRITE_DATA + MX_CCW_ANGLE_LIMIT_L + Mode_L + Mode_H + Mode_L + Mode_H)) & 0xFF;
-			uint8_t Data_packet_2[11] = {MX_START,MX_START,ID,MX_CCW_CW_LENGTH,MX_WRITE_DATA,MX_CW_ANGLE_LIMIT_L,Mode_L,Mode_H,Mode_L,Mode_H,Check_sum};
+			uint8_t Data_packet_2[9] = {MX_START,MX_START,ID,MX_GOAL_LENGTH,MX_WRITE_DATA,MX_CCW_ANGLE_LIMIT_L,0,0,Check_sum};
 			UART_WriteRead(Data_packet_2, sizeof(Data_packet_2), ONE_BYTE_READ, Error_array);
 			break;
 		case(JOINT):

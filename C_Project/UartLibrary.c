@@ -43,6 +43,7 @@ int UART_Write(uint8_t data)
 	*(uint32_t *) Addr_reg =  STATUS_ADDR;
 	
 	uint8_t status;
+	
 	do 	// check TX busy flag
 	{
 		status = *(uint32_t *)Data_out_reg;
@@ -55,6 +56,8 @@ int UART_Write(uint8_t data)
 	*(uint32_t *)Flag_reg = WRITE_START_FLAGS;
 	
 	*(uint32_t *)Flag_reg = WRITE_STOP_FLAGS;	// Toggle Write enable flag
+	
+	*(uint32_t *) Addr_reg =  STATUS_ADDR;
 	
 	return 0;
 }
@@ -77,20 +80,29 @@ void UART_WriteRead(uint8_t data[], int Write_length, int Read_length, uint8_t D
 	}
 	
 	
+	//*(uint32_t *)Flag_reg = FINAL_WRITE_STOP_FLAGS;
+	
 	// Read Bytes
 	for(i = 0; i<Read_length+PACKET_OVERHEAD; i++)
 	{
-		*(uint32_t *)Addr_reg = STATUS_ADDR;
+		*(uint32_t *)Addr_reg = STATUS_ADDR;		
 		*(uint32_t *)Flag_reg = READ_TOGGLE_ON;
 		*(uint32_t *)Flag_reg = READ_TOGGLE_OFF;
 		
-		int Time_out_counter = 0;
+		unsigned long Time_out_counter = 0;
 		do 	// check RX busy flag
 		{
 			Time_out_counter++;
-			printf("Checking RxRdy. %d Try\n", Time_out_counter);
 			status = *(uint32_t *)Data_out_reg;
-		}while(!(status & 0x02)  && Time_out_counter < 100);
+		}while(!(status & 0b10)  && Time_out_counter < 40000);
+		
+		if(status & 0x02){
+			//printf("Data Received. Bytes: %d\n", i);
+		}
+				
+		if(Time_out_counter >= 40000){
+			//printf("Read Timed Out. Bytes: %d\n", i);
+		}
 		
 		*(uint32_t *) Addr_reg =  DATA_ADDR;
 		Data_array[i] = *(uint32_t *) Data_out_reg;

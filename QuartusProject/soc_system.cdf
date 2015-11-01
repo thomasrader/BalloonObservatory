@@ -6,7 +6,7 @@ JedecChain;
 	P ActionCode(Ign)
 		Device PartName(SOCVHPS) MfrSpec(OpMask(0));
 	P ActionCode(Cfg)
-		Device PartName(5CSEMA4U23) Path("C:/Users/Zachary/Desktop/I2C_Test/") File("soc_system.sof") MfrSpec(OpMask(1));
+		Device PartName(5CSEMA4U23) Path("C:/Users/Zachary/Documents/GitHub/BalloonObservatory/QuartusProject/") File("soc_system.sof") MfrSpec(OpMask(1));
 
 ChainEnd;
 
