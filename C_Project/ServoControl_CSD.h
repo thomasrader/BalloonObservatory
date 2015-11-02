@@ -8,6 +8,10 @@
 #define CONTACT_SWITCH_ADDR	0x0
 #define CONTACT_SWITCH_DDR_ADDR	0x4
 #define STOP	0x0
+
+#define TEST_SPEED 50
+#define DELAY_BETWEEN_MEASURMENTS 1000
+#define NUMBER_OF_MEASURMENTS 100
 //-----------------------------------------------------------------------//
 //	USER INCLUDES	//
 
@@ -23,6 +27,9 @@
 //	SYSTEM INCLUDES	//
 
 #include <stdio.h>
+#include <time.h>
+#include <sys/time.h>
+#include <stdlib.h>
 #include <unistd.h>
 #include <fcntl.h>
 #include <sys/mman.h>

@@ -1,6 +1,7 @@
 //	USER INCLUDES	//
 #include "ServoControl_CSD.h"
 #include "DynamixelMX12.h"
+#include "I2C_Library.h"
 //-----------------------------------------------------------------------//
 
 //GLOBAL VARIABLES
@@ -95,4 +96,60 @@ void Get_Zero_Pos(void * Contact_Addr, void * Contact_DDR)
 	
 	Set_Rate(SERVO1, STOP, Data_out);
 }
+
+
+/* Continours_Mode_Test runs through the continuous mode test for the csd
+*	INPUTS:
+*		Contact_Addr, the address of the contact pio controller
+*		Contact_DDR, the address of the pio controllers data direction register
+*/
+void Continous_Mode_Test(void * Contact_Addr, void * Contact_DDR){
+	printf("Start dynamic test\n");
+	
+	 //Local variables
+	 struct timeval Start_time, Time_stamp[NUMBER_OF_MEASURMENTS];
+	 int IMU_roll_data[NUMBER_OF_MEASURMENTS],  IMU_pitch_data[NUMBER_OF_MEASURMENTS],  IMU_yaw_data[NUMBER_OF_MEASURMENTS];
+	
+	//Set servo to wheel mode
+	Change_Mode(SERVO1, WHEEL, Data_out);
+	
+	//Reset servo position
+	Get_Zero_Pos(Contact_Addr, Contact_DDR);
+	
+	//Start turning the servo at a set rate
+	Set_Rate(SERVO1, TEST_SPEED, Data_out);
+	
+	printf("Servo speed set\n");
+	
+	//start timer
+	gettimeofday(&Start_time, NULL);
+	
+	//start taking measuremnts 
+	int i = 0;
+	for(i = 0; i < NUMBER_OF_MEASURMENTS; i++){
+		//delay between 
+		usleep(DELAY_BETWEEN_MEASURMENTS);
+		
+		//Sample IMU here
+		IMU_roll_data[i] = //
+		IMU_pitch_data[i] = //
+		IMU_yaw_data[i] = //
+		
+		//save timestamp
+		gettimeofday(&Time_stamp[i], NULL);
+	}
+	
+	printf("Test complete\n");
+	
+	//Stop the servo
+	Set_Rate(SERVO1, STOP, Data_out);
+	printf("Servo stopped\n");
+	
+	//write data points to file
+	printf("Saving data to file\n");
+	
+	
+}
+
+
 
