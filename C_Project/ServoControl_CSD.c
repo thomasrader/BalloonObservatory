@@ -42,6 +42,37 @@ int main() {
 	
 	Set_NDOF_mode();
 	
+	Change_Mode(SERVO1, WHEEL, Data_out);
+	
+	
+	/*
+	uint8_t Error_array[15];
+	uint8_t Check_sum = (~(SERVO1 + MX_GOAL_LENGTH + MX_WRITE_DATA + 20 + 0x40 + 0xA2)) & 0xFF;
+	uint8_t Data_packet_2[9] = {MX_START,MX_START,SERVO1,MX_GOAL_LENGTH,MX_WRITE_DATA, 20, 0x40, 0xA2,Check_sum};
+	UART_WriteRead(Data_packet_2, sizeof(Data_packet_2), ONE_BYTE_READ, Error_array);*/
+	
+	
+	/*
+	Get_Zero_Pos(Contact_Addr, Contact_DDR);
+	
+	//Change_Mode(SERVO1, MULTI, Data_out);
+	
+	
+	Change_Mode(SERVO1, MULTI, Data_out);
+	
+	usleep(1000*3000);
+	
+	Change_Mode(SERVO1, MULTI, Data_out);
+	
+	int i;
+	for(i = 2; i <=10; i++){
+		Set_Position(SERVO1, i * 1000, Data_out);
+		
+		usleep(1000*3000);
+	}
+	
+	*/
+	
 	/*
 	while(1){
 		int Euler_data[3];
@@ -116,12 +147,12 @@ void Get_Zero_Pos(void * Contact_Addr, void * Contact_DDR)
 	*(uint32_t *) Contact_DDR = *(uint32_t  *) Contact_DDR & 0xFB;
 	Set_Rate(SERVO1, ROTATE_DOWN, Data_out);
 	uint8_t Contact_status;
-	printf("Stated Turning Motor\n");
+	//printf("Stated Turning Motor\n");
 	do {
 		Contact_status = *(uint32_t *) Contact_Addr;
 	} while((Contact_status & 0x04));
 	
-	printf("Stated Turning Motor %d\n",  (Contact_status));
+	//printf("Stated Turning Motor %d\n",  (Contact_status));
 	
 	Set_Rate(SERVO1, STOP, Data_out);
 }
@@ -202,37 +233,60 @@ void Run_Static_Test(void * Contact_Addr, void * Contact_DDR)
 	Change_Mode(SERVO1, WHEEL, Data_out);	
 	Get_Zero_Pos(Contact_Addr, Contact_DDR);
 	
-	printf("Finished Zeroing servo\n");
+	//printf("Finished Zeroing servo\n");
+	
+	usleep(1000*30);
 	
 	Change_Mode(SERVO1, MULTI, Data_out);
 	
+	usleep(1000*30);
+	
 	uint8_t Error_array[15];
 	
-	uint8_t Check_sum = (~(SERVO1 + MX_GOAL_LENGTH + MX_WRITE_DATA + 20 + 0x40 + 0xA2)) & 0xFF;
-	uint8_t Data_packet_2[9] = {MX_START,MX_START,SERVO1,MX_GOAL_LENGTH,MX_WRITE_DATA, 20, 0x40, 0xA2,Check_sum};
+	uint8_t Check_sum = (~(SERVO1 + MX_GOAL_LENGTH + MX_WRITE_DATA + 20)) & 0xFF;
+	uint8_t Data_packet_2[9] = {MX_START,MX_START,SERVO1,MX_GOAL_LENGTH,MX_WRITE_DATA, 20, 0, 0,Check_sum};
 	UART_WriteRead(Data_packet_2, sizeof(Data_packet_2), ONE_BYTE_READ, Error_array);
 	
-	printf("Set servo to MULTI\n");
+	//printf("Set servo to MULTI\n");
 	
 	double i;
 	int j;
-	for(i = 0.01; i < 0.7 ; i += 0.06)
+	for(i = 0.01; i < 0.5 ; i += 0.03)
 	{
-		printf("Entered first for loop\n");
+		//printf("Entered first for loop\n");
 		Angle_step = i;
 		for(j = 0; j<3;j++)
 		{
-			printf("Entered second for loop\n");
+			//printf("Entered second for loop\n");
 			Cur_angle += Angle_step;
 			Servo_step = 357827 * tan(Cur_angle * (3.14159265354262/180));
 			Cur_servo_pos += Servo_step;
-			printf("Did math\n");
+			//printf("Did math\n");
+			if(Cur_servo_pos > 24000){
+				printf("It broke :(\n At %lf\n",i);
+			}
 			Set_Position(SERVO1, Cur_servo_pos, Data_out);
-			printf("Set servo position\n");
+			//printf("Set servo position\n");
 			usleep(3000*100);
 			Get_Orientation(Euler_data);
-			printf("Got orientation\n");
-			printf("Pitch,%d\nRoll,%d\nYaw,%d\nPos,%d\nStep,%lf\n", Euler_data[0],Euler_data[1],Euler_data[2], Cur_servo_pos, Angle_step);
+			//printf("Got orientation\n");
+			printf("Pitch,%d\nRoll,%d\nYaw,%d\nPos,%d\nStep,%lf\n\n", Euler_data[0],Euler_data[1],Euler_data[2], Cur_servo_pos, Angle_step);
+			
 		}
+		
+			Change_Mode(SERVO1, WHEEL, Data_out);	
+			
+			Get_Zero_Pos(Contact_Addr, Contact_DDR);
+			
+			//printf("Finished Zeroing servo\n");
+			
+			usleep(1000*300);
+			
+			Change_Mode(SERVO1, MULTI, Data_out);
+			
+			usleep(1000*300);
+			
+			Cur_servo_pos = 1400;
+			Cur_angle = 0;
 	}
 }

@@ -4,7 +4,7 @@
 //	USER DEFINES	//
 
 #define SERVO1	0x01
-#define ROTATE_DOWN		1050
+#define ROTATE_DOWN		1150
 #define CONTACT_SWITCH_ADDR	0x0
 #define CONTACT_SWITCH_DDR_ADDR	0x4
 #define STOP	0x0
