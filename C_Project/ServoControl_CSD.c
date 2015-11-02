@@ -2,11 +2,8 @@
 #include <math.h>
 #include "ServoControl_CSD.h"
 #include "DynamixelMX12.h"
-<<<<<<< HEAD
 #include "I2C_Library.h"
-=======
 #include "BNO055.h";
->>>>>>> 1786c603622d92a833e761d363d723f96745d568
 //-----------------------------------------------------------------------//
 
 //GLOBAL VARIABLES
@@ -88,7 +85,6 @@ void Get_Zero_Pos(void * Contact_Addr, void * Contact_DDR)
 	Set_Rate(SERVO1, STOP, Data_out);
 }
 
-<<<<<<< HEAD
 
 /* Continours_Mode_Test runs through the continuous mode test for the csd
 *	INPUTS:
@@ -140,8 +136,6 @@ void Continous_Mode_Test(void * Contact_Addr, void * Contact_DDR){
 	//write data points to file
 	printf("Saving data to file\n");
 	
-	
-=======
 void Run_Static_Test()
 {
 	int Cur_servo_pos = 1400;
@@ -165,13 +159,4 @@ void Run_Static_Test()
 			
 		}
 	}
-	
->>>>>>> 1786c603622d92a833e761d363d723f96745d568
 }
-
-
-
-<<<<<<< HEAD
-=======
-
->>>>>>> 1786c603622d92a833e761d363d723f96745d568
