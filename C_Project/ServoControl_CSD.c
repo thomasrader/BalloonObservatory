@@ -86,7 +86,7 @@ void Get_Zero_Pos(void * Contact_Addr, void * Contact_DDR)
 }
 
 
-/* Continours_Mode_Test runs through the continuous mode test for the csd
+/* Continous_Mode_Test runs through the continuous mode test for the csd
 *	INPUTS:
 *		Contact_Addr, the address of the contact pio controller
 *		Contact_DDR, the address of the pio controllers data direction register
