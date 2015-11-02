@@ -136,6 +136,18 @@ void Continous_Mode_Test(void * Contact_Addr, void * Contact_DDR){
 	//write data points to file
 	printf("Saving data to file\n");
 	
+	for(i = 0; i < NUMBER_OF_MEASURMENTS; i++){
+		printf("%d,", IMU_pitch_data[i]);
+		printf("%d,", IMU_roll_data[i]);
+		printf("%d,", IMU_yaw_data[i]);
+		
+		printf("%d,", Time_stamp[i].tv_sec);
+		printf("%d,", Time_stamp[i].tv_usec);
+	}
+	
+}
+
+
 void Run_Static_Test()
 {
 	int Cur_servo_pos = 1400;
