@@ -153,6 +153,7 @@ void Run_Static_Test()
 	int Cur_servo_pos = 1400;
 	int Servo_step = 0;
 	float Cur_angle, Angle_step = 0;
+	int Euler_data[3];
 	Change_Mode(SERVO1, WHEEL, Data_out);	
 	Get_Zero_Pos(Contact_Addr, Contact_DDR);
 	Change_Mode(SERVO1, MULTI, Data_out);
@@ -168,7 +169,9 @@ void Run_Static_Test()
 			Servo_step = 2.73/(tan(Cur_angle)*0.00275);
 			Cur_servo_pos += Servo_step;
 			Set_Position(SERVO1, Cur_servo_pos, Data_out);
-			
+			usleep(3000*1000);
+			Get_Orientation(Euler_data);
+			printf("Pitch,%d\nRoll,%d\nYaw,%d\n", Euler_data[0],Euler_data[1],Euler_data[2]);
 		}
 	}
 }
