@@ -1,6 +1,8 @@
 //	USER INCLUDES	//
+#include <math.h>
 #include "ServoControl_CSD.h"
 #include "DynamixelMX12.h"
+#include "BNO055.h";
 //-----------------------------------------------------------------------//
 
 //GLOBAL VARIABLES
@@ -45,20 +47,6 @@ int main() {
 	
 	Change_Mode(SERVO1, WHEEL, Data_out);
 	
-	printf("Set Servo to wheel mode\n");
-	
-	Get_Zero_Pos(Contact_Addr, Contact_DDR);
-	
-	usleep(3000*1000);
-	
-	Change_Mode(SERVO1, MULTI, Data_out);
-	
-	Set_Position(SERVO1, 1400, Data_out);
-	
-	usleep(3000*1000);
-	
-	Change_Mode(SERVO1, WHEEL, Data_out);
-	
 	Set_Rate(SERVO1, 50, Data_out);
 	
 	usleep(3000*1000);
@@ -78,7 +66,7 @@ int main() {
 	//----------------------------------------------------------------------//
 	return( 0 );
 }
-/* Get_Zero_Pos will return the position to its zero angle position
+/* Get_Zero_Pos will return the IMU tilt plate to its zero angle position
 *	
 */
 void Get_Zero_Pos(void * Contact_Addr, void * Contact_DDR)
@@ -95,4 +83,33 @@ void Get_Zero_Pos(void * Contact_Addr, void * Contact_DDR)
 	
 	Set_Rate(SERVO1, STOP, Data_out);
 }
+
+void Run_Static_Test()
+{
+	int Cur_servo_pos = 1400;
+	int Servo_step = 0;
+	float Cur_angle, Angle_step = 0;
+	Change_Mode(SERVO1, WHEEL, Data_out);	
+	Get_Zero_Pos(Contact_Addr, Contact_DDR);
+	Change_Mode(SERVO1, MULTI, Data_out);
+	
+	float i;
+	int j;
+	for(i = 0.01; i < 0.7 ; i += 0.03)
+	{
+		Angle_step = i;
+		for(j = 0; j<3;j++)
+		{
+			Cur_angle += Angle_step;
+			Servo_step = 2.73/(tan(Cur_angle)*0.00275);
+			Cur_servo_pos += Servo_step;
+			Set_Position(SERVO1, Cur_servo_pos, Data_out);
+			
+		}
+	}
+	
+}
+
+
+
 
