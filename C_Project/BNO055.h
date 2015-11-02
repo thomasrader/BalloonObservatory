@@ -1,7 +1,6 @@
 #ifndef BNO055_h
 #define BNO055_h
 
-1f-1a
 //	USER DEFINES	//
 #define EULER_PITCH_H	0x1F
 #define	EULER_PITCH_L	0x1E
@@ -25,10 +24,20 @@
 #include "soc_cv_av/socal/hps.h"
 #include "soc_cv_av/socal/alt_gpio.h"
 #include "hps_0.h"
+
+#define HW_REGS_BASE ( ALT_STM_OFST )
+#define HW_REGS_SPAN ( 0x04000000 )
+#define HW_REGS_MASK ( HW_REGS_SPAN - 1 )
+
+#define PIO_Data_ADDR 0x00000000
+#define PIO_DDIR_ADDR 0x00000004
+
+#include "I2C_Library.h"
 //----------------------------------------------------------------------//
 //	FUNCTION PROTOTYPE DECLERATIONS	//
 
-void Get_Orientation(int IMU_data[])
+void BNO055_Map(void* virtual_base);
+void Get_Orientation(int IMU_data[]);
 void Set_NDOF_mode();
 //----------------------------------------------------------------------//
 #endif

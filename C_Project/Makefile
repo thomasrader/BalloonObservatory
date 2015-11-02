@@ -1,5 +1,5 @@
 #
-TARGET = Uart_Test
+TARGET = CSD_Demo
 
 #
 CROSS_COMPILE = arm-linux-gnueabihf-
@@ -10,7 +10,7 @@ ARCH= arm
 
 
 build: $(TARGET)
-$(TARGET): ServoControl_CSD.o UartLibrary.o DynamixelMX12.o
+$(TARGET): ServoControl_CSD.o UartLibrary.o DynamixelMX12.o BNO055.o I2C_Library.o
 	$(CC) $(LDFLAGS)   $^ -o $@  
 %.o : %.c
 	$(CC) $(CFLAGS) -c $< -o $@

@@ -3,7 +3,9 @@
 #include "ServoControl_CSD.h"
 #include "DynamixelMX12.h"
 #include "I2C_Library.h"
-#include "BNO055.h";
+#include "BNO055.h"
+#include "I2C_Library.h"
+#include "DynamixelMX12.h"
 //-----------------------------------------------------------------------//
 
 //GLOBAL VARIABLES
@@ -35,7 +37,51 @@ int main() {
 	
 	//	ADDITIONAL MEMORY MAPPING	//
 	
+	BNO055_Map(virtual_base);
 	UART_Map(virtual_base);
+	
+	Set_NDOF_mode();
+	
+	/*
+	while(1){
+		int Euler_data[3];
+		Get_Orientation(Euler_data);
+		
+		printf("Pitch,%d\nRoll,%d\nYaw,%d\n", Euler_data[0],Euler_data[1],Euler_data[2]);
+		
+		usleep(500* 1000);
+	}*/
+	 
+	 /*
+	void * PIO_Data = Contact_Addr;
+	void * PIO_DDIR = Contact_DDR;
+	 
+	uint8_t failedWrite;
+	I2C_WriteByte(0x28, 0x3d, 0b00001000, PIO_Data, PIO_DDIR, &failedWrite);
+	
+	
+	
+	int i; 
+	for(i = 0x0; i < 0x3b; i++){
+		uint8_t failed = 0;
+		
+		//Read Data From Device
+		int data = I2C_ReadByte(0x28, i, PIO_Data, PIO_DDIR, &failed);
+		
+		
+		if(failed){
+			printf("Failed\n");
+		}
+			
+			
+		printf("Data(0x%02x): %d\n",i ,data);
+		
+		//I2C_Start(PIO_Data, PIO_DDIR);
+		
+		usleep(10000);
+	} */
+	 
+	
 	//----------------------------------------------------------------------//
 	
 	// LOCAL VARIABLES	//
@@ -46,13 +92,8 @@ int main() {
 		//printf("Data: %d: \n", *(uint32_t *) Contact_Addr);
 	//}
 	
-	Change_Mode(SERVO1, WHEEL, Data_out);
-	
-	Set_Rate(SERVO1, 50, Data_out);
-	
-	usleep(3000*1000);
-	
-	Set_Rate(SERVO1, 0, Data_out);
+	//Continous_Mode_Test(Contact_Addr, Contact_DDR);
+	Run_Static_Test(Contact_Addr, Contact_DDR);
 	
 	//----------------------------------------------------------------------//
 	//	CLEAN UP MEMORY MAPPING	//
@@ -93,6 +134,7 @@ void Get_Zero_Pos(void * Contact_Addr, void * Contact_DDR)
 */
 void Continous_Mode_Test(void * Contact_Addr, void * Contact_DDR){
 	printf("Start dynamic test\n");
+	int Euler_data[3];
 	
 	 //Local variables
 	 struct timeval Start_time, Time_stamp[NUMBER_OF_MEASURMENTS];
@@ -118,10 +160,12 @@ void Continous_Mode_Test(void * Contact_Addr, void * Contact_DDR){
 		//delay between 
 		usleep(DELAY_BETWEEN_MEASURMENTS);
 		
+		Get_Orientation(Euler_data);
+		
 		//Sample IMU here
-		IMU_roll_data[i] = //
-		IMU_pitch_data[i] = //
-		IMU_yaw_data[i] = //
+		IMU_roll_data[i] = Euler_data[1];
+		IMU_pitch_data[i] = Euler_data[0];
+		IMU_yaw_data[i] = Euler_data[2];
 		
 		//save timestamp
 		gettimeofday(&Time_stamp[i], NULL);
@@ -141,37 +185,54 @@ void Continous_Mode_Test(void * Contact_Addr, void * Contact_DDR){
 		printf("%d,", IMU_roll_data[i]);
 		printf("%d,", IMU_yaw_data[i]);
 		
-		printf("%d,", Time_stamp[i].tv_sec);
-		printf("%d,", Time_stamp[i].tv_usec);
+		printf("%d,", (int) Time_stamp[i].tv_sec);
+		printf("%d,", (int) Time_stamp[i].tv_usec);
 	}
 	
 }
 
 
-void Run_Static_Test()
+void Run_Static_Test(void * Contact_Addr, void * Contact_DDR)
 {
 	int Cur_servo_pos = 1400;
 	int Servo_step = 0;
-	float Cur_angle, Angle_step = 0;
+	double Cur_angle = 0;
+	double Angle_step = 0;
 	int Euler_data[3];
 	Change_Mode(SERVO1, WHEEL, Data_out);	
 	Get_Zero_Pos(Contact_Addr, Contact_DDR);
+	
+	printf("Finished Zeroing servo\n");
+	
 	Change_Mode(SERVO1, MULTI, Data_out);
 	
-	float i;
+	uint8_t Error_array[15];
+	
+	uint8_t Check_sum = (~(SERVO1 + MX_GOAL_LENGTH + MX_WRITE_DATA + 20 + 0x40 + 0xA2)) & 0xFF;
+	uint8_t Data_packet_2[9] = {MX_START,MX_START,SERVO1,MX_GOAL_LENGTH,MX_WRITE_DATA, 20, 0x40, 0xA2,Check_sum};
+	UART_WriteRead(Data_packet_2, sizeof(Data_packet_2), ONE_BYTE_READ, Error_array);
+	
+	printf("Set servo to MULTI\n");
+	
+	double i;
 	int j;
-	for(i = 0.01; i < 0.7 ; i += 0.03)
+	for(i = 0.01; i < 0.7 ; i += 0.06)
 	{
+		printf("Entered first for loop\n");
 		Angle_step = i;
 		for(j = 0; j<3;j++)
 		{
+			printf("Entered second for loop\n");
 			Cur_angle += Angle_step;
-			Servo_step = 2.73/(tan(Cur_angle)*0.00275);
+			Servo_step = 357827 * tan(Cur_angle * (3.14159265354262/180));
 			Cur_servo_pos += Servo_step;
+			printf("Did math\n");
 			Set_Position(SERVO1, Cur_servo_pos, Data_out);
-			usleep(3000*1000);
+			printf("Set servo position\n");
+			usleep(3000*100);
 			Get_Orientation(Euler_data);
-			printf("Pitch,%d\nRoll,%d\nYaw,%d\n", Euler_data[0],Euler_data[1],Euler_data[2]);
+			printf("Got orientation\n");
+			printf("Pitch,%d\nRoll,%d\nYaw,%d\nPos,%d\nStep,%lf\n", Euler_data[0],Euler_data[1],Euler_data[2], Cur_servo_pos, Angle_step);
 		}
 	}
 }

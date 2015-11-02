@@ -10,8 +10,8 @@
 #define STOP	0x0
 
 #define TEST_SPEED 50
-#define DELAY_BETWEEN_MEASURMENTS 1000
-#define NUMBER_OF_MEASURMENTS 100
+#define DELAY_BETWEEN_MEASURMENTS (1000*100)
+#define NUMBER_OF_MEASURMENTS 50
 //-----------------------------------------------------------------------//
 //	USER INCLUDES	//
 
@@ -42,6 +42,7 @@
 //	FUNCTION PROTOTYPES	//
 
 void Get_Zero_Pos(void * Contact_Addr, void * Contact_DDR);
-void Run_Static_Test();
+void Run_Static_Test(void * Contact_Addr, void * Contact_DDR);
+void Continous_Mode_Test(void * Contact_Addr, void * Contact_DDR);
 
 #endif

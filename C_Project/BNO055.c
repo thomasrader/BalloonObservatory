@@ -5,6 +5,9 @@
 * 	INPUT:	virtual_base	-- the base address of the virtually mapped memory
 */
 
+void * PIO_Data;
+void * PIO_DDIR;
+
 void BNO055_Map(void* virtual_base)
 {
 	PIO_Data = virtual_base + ( ( unsigned long  )( ALT_LWFPGASLVS_OFST + PIO_Data_ADDR ) & ( unsigned long)( HW_REGS_MASK ) );
@@ -17,10 +20,13 @@ void BNO055_Map(void* virtual_base)
 
 void Get_Orientation(int IMU_data[])
 {
+	//Failure flag
+	uint8_t failed = 0;
+	
 	//Read Roll
-	IMU_data[0] = (I2C_ReadByte(0x28, EULER_PITCH_H, PIO_Data, PIO_DDIR, &failed) << 8) & (I2C_ReadByte(0x28, EULER_PITCH_L, PIO_Data, PIO_DDIR, &failed);
-	IMU_data[1] = (I2C_ReadByte(0x28, EULER_ROLL_H, PIO_Data, PIO_DDIR, &failed) << 8) & (I2C_ReadByte(0x28, EULER_ROLL_L, PIO_Data, PIO_DDIR, &failed);
-	IMU_data[1] = (I2C_ReadByte(0x28, EULER_YAW_H, PIO_Data, PIO_DDIR, &failed) << 8) & (I2C_ReadByte(0x28, EULER_YAW_L, PIO_Data, PIO_DDIR, &failed);
+	IMU_data[0] = (I2C_ReadByte(0x28, EULER_PITCH_H, PIO_Data, PIO_DDIR, &failed) << 8) | (I2C_ReadByte(0x28, EULER_PITCH_L, PIO_Data, PIO_DDIR, &failed));
+	IMU_data[1] = (I2C_ReadByte(0x28, EULER_ROLL_H, PIO_Data, PIO_DDIR, &failed) << 8) | (I2C_ReadByte(0x28, EULER_ROLL_L, PIO_Data, PIO_DDIR, &failed));
+	IMU_data[2] = (I2C_ReadByte(0x28, EULER_YAW_H, PIO_Data, PIO_DDIR, &failed) << 8) | (I2C_ReadByte(0x28, EULER_YAW_L, PIO_Data, PIO_DDIR, &failed));
 }
 
 //----------------------------------------------------------------------------------//
@@ -30,6 +36,9 @@ void Get_Orientation(int IMU_data[])
 
 void Set_NDOF_mode()
 {
+	//Failure flag
+	uint8_t failedWrite = 0;
+	
 	//Set IMU to NDOF mode
 	I2C_WriteByte(0x28, 0x3d, 0b00001100, PIO_Data, PIO_DDIR, &failedWrite);
 }
