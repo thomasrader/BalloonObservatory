@@ -42,6 +42,6 @@
 //	FUNCTION PROTOTYPES	//
 
 void Get_Zero_Pos(void * Contact_Addr, void * Contact_DDR);
-
+void Run_Static_Test();
 
 #endif
