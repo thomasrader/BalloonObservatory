@@ -164,7 +164,7 @@ void Get_Zero_Pos(void * Contact_Addr, void * Contact_DDR)
 *		Contact_DDR, the address of the pio controllers data direction register
 */
 void Continous_Mode_Test(void * Contact_Addr, void * Contact_DDR){
-	printf("Start dynamic test\n");
+	
 	int Euler_data[3];
 	
 	 //Local variables
@@ -179,8 +179,6 @@ void Continous_Mode_Test(void * Contact_Addr, void * Contact_DDR){
 	
 	//Start turning the servo at a set rate
 	Set_Rate(SERVO1, TEST_SPEED, Data_out);
-	
-	printf("Servo speed set\n");
 	
 	//start timer
 	gettimeofday(&Start_time, NULL);
@@ -202,14 +200,8 @@ void Continous_Mode_Test(void * Contact_Addr, void * Contact_DDR){
 		gettimeofday(&Time_stamp[i], NULL);
 	}
 	
-	printf("Test complete\n");
-	
 	//Stop the servo
 	Set_Rate(SERVO1, STOP, Data_out);
-	printf("Servo stopped\n");
-	
-	//write data points to file
-	printf("Saving data to file\n");
 	
 	for(i = 0; i < NUMBER_OF_MEASURMENTS; i++){
 		printf("%d,", IMU_pitch_data[i]);
@@ -229,7 +221,8 @@ void Run_Static_Test(void * Contact_Addr, void * Contact_DDR)
 	int Servo_step = 0;
 	double Cur_angle = 0;
 	double Angle_step = 0;
-	int Euler_data[3];
+	int Current_Euler_data[3];
+	int Prev_Euler_data[3];
 	Change_Mode(SERVO1, WHEEL, Data_out);	
 	Get_Zero_Pos(Contact_Addr, Contact_DDR);
 	
@@ -247,30 +240,40 @@ void Run_Static_Test(void * Contact_Addr, void * Contact_DDR)
 	uint8_t Data_packet_2[9] = {MX_START,MX_START,SERVO1,MX_GOAL_LENGTH,MX_WRITE_DATA, 20, 0, 0,Check_sum};
 	UART_WriteRead(Data_packet_2, sizeof(Data_packet_2), ONE_BYTE_READ, Error_array);
 	
-	//printf("Set servo to MULTI\n");
+	printf("Step Size,Roll,Pitch,Yaw\n");
 	
 	double i;
 	int j;
 	for(i = 0.01; i < 0.5 ; i += 0.03)
 	{
-		//printf("Entered first for loop\n");
+		Get_Orientation(Prev_Euler_data);
+		
 		Angle_step = i;
 		for(j = 0; j<3;j++)
 		{
 			//printf("Entered second for loop\n");
 			Cur_angle += Angle_step;
-			Servo_step = 357827 * tan(Cur_angle * (3.14159265354262/180));
+			
+			//Find angles in radians
+			double Cur_angle_rad  =  Cur_angle  * (PI/180);
+			double Angle_step_rad =  Angle_step * (PI/180);
+			
+			Servo_step = HINGE_DISTANCE * THREADS_PER_INCH * COUNTS_PER_360 * (tan(Cur_angle_rad) - tan(Cur_angle_rad - Angle_step_rad));
 			Cur_servo_pos += Servo_step;
 			//printf("Did math\n");
 			if(Cur_servo_pos > 24000){
 				printf("It broke :(\n At %lf\n",i);
 			}
 			Set_Position(SERVO1, Cur_servo_pos, Data_out);
-			//printf("Set servo position\n");
-			usleep(3000*100);
-			Get_Orientation(Euler_data);
-			//printf("Got orientation\n");
-			printf("Pitch,%d\nRoll,%d\nYaw,%d\nPos,%d\nStep,%lf\n\n", Euler_data[0],Euler_data[1],Euler_data[2], Cur_servo_pos, Angle_step);
+
+			usleep(3000*1000);
+			Get_Orientation(Current_Euler_data);
+			
+			printf("%lf,%d,%d,%d\n",Angle_step,(Current_Euler_data[0] - Prev_Euler_data[0]),(Current_Euler_data[1] - Prev_Euler_data[1]),(Current_Euler_data[2] - Prev_Euler_data[2]));
+			
+			Prev_Euler_data[0] = Current_Euler_data[0];
+			Prev_Euler_data[1] = Current_Euler_data[1];
+			Prev_Euler_data[2] = Current_Euler_data[2];
 			
 		}
 		
@@ -287,6 +290,7 @@ void Run_Static_Test(void * Contact_Addr, void * Contact_DDR)
 			usleep(1000*300);
 			
 			Cur_servo_pos = 1400;
-			Cur_angle = 0;
+			Cur_angle = 0;	
+			
 	}
 }

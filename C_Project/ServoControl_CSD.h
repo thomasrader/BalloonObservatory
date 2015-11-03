@@ -12,6 +12,13 @@
 #define TEST_SPEED 50
 #define DELAY_BETWEEN_MEASURMENTS (1000*100)
 #define NUMBER_OF_MEASURMENTS 50
+
+#define HINGE_DISTANCE 			2.5		//Distance from threaded rod to hinge in [in]
+#define THREADS_PER_INCH 		32		//Thread count per inch of the threaded rod
+#define COUNTS_PER_360 		4096		//servo encoder counter per full revolution 
+
+#define PI 	3.14159265354252		//Yummy
+
 //-----------------------------------------------------------------------//
 //	USER INCLUDES	//
 
