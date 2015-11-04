@@ -74,11 +74,13 @@ int main() {
 	*/
 	
 	/*
+	printf("Pitch\tRoll\tYaw\n");
+
 	while(1){
 		int Euler_data[3];
 		Get_Orientation(Euler_data);
 		
-		printf("Pitch,%d\nRoll,%d\nYaw,%d\n", Euler_data[0],Euler_data[1],Euler_data[2]);
+		printf("%lf\t%lf\t%lf\n", (float)Euler_data[0]/16,  (float)Euler_data[1]/16,  (float)Euler_data[2]/16);
 		
 		usleep(500* 1000);
 	}*/
@@ -100,14 +102,14 @@ int main() {
 		int data = I2C_ReadByte(0x28, i, PIO_Data, PIO_DDIR, &failed);
 		
 		
-		if(failed){
+		if(failed){ 
 			printf("Failed\n");
 		}
 			
 			
 		printf("Data(0x%02x): %d\n",i ,data);
 		
-		//I2C_Start(PIO_Data, PIO_DDIR);
+		//I2C_Start(PIO_Data, PI O_DDIR);
 		
 		usleep(10000);
 	} */
@@ -123,8 +125,8 @@ int main() {
 		//printf("Data: %d: \n", *(uint32_t *) Contact_Addr);
 	//}
 	
-	//Continous_Mode_Test(Contact_Addr, Contact_DDR);
-	Run_Static_Test(Contact_Addr, Contact_DDR);
+	Continous_Mode_Test(Contact_Addr, Contact_DDR);
+	//Run_Static_Test(Contact_Addr, Contact_DDR);
 	
 	//----------------------------------------------------------------------//
 	//	CLEAN UP MEMORY MAPPING	//
@@ -170,10 +172,10 @@ void Continous_Mode_Test(void * Contact_Addr, void * Contact_DDR){
 	 //Local variables
 	 struct timeval Start_time, Time_stamp[NUMBER_OF_MEASURMENTS];
 	 int IMU_roll_data[NUMBER_OF_MEASURMENTS],  IMU_pitch_data[NUMBER_OF_MEASURMENTS],  IMU_yaw_data[NUMBER_OF_MEASURMENTS];
-	
+	 
 	//Set servo to wheel mode
 	Change_Mode(SERVO1, WHEEL, Data_out);
-	
+ 
 	//Reset servo position
 	Get_Zero_Pos(Contact_Addr, Contact_DDR);
 	
@@ -181,7 +183,7 @@ void Continous_Mode_Test(void * Contact_Addr, void * Contact_DDR){
 	Set_Rate(SERVO1, TEST_SPEED, Data_out);
 	
 	//start timer
-	gettimeofday(&Start_time, NULL);
+	gettimeofday(&Start_time, NULL); 
 	
 	//start taking measuremnts 
 	int i = 0;
@@ -192,10 +194,10 @@ void Continous_Mode_Test(void * Contact_Addr, void * Contact_DDR){
 		Get_Orientation(Euler_data);
 		
 		//Sample IMU here
-		IMU_roll_data[i] = Euler_data[1];
 		IMU_pitch_data[i] = Euler_data[0];
+		IMU_roll_data[i] = Euler_data[1];
 		IMU_yaw_data[i] = Euler_data[2];
-		
+		  
 		//save timestamp
 		gettimeofday(&Time_stamp[i], NULL);
 	}
@@ -203,13 +205,36 @@ void Continous_Mode_Test(void * Contact_Addr, void * Contact_DDR){
 	//Stop the servo
 	Set_Rate(SERVO1, STOP, Data_out);
 	
-	for(i = 0; i < NUMBER_OF_MEASURMENTS; i++){
+	double Run_time, Delta_time = 0;
+	double Cur_angle = 0;
+	double Prev_angle = 0;
+	double Delta_Angle = 0;
+	
+	
+	printf("ActualChange,MeasuredChangePitch,MeasuredChangeRoll,MeasuredChangeYaw,Absolute Angle,IMU Pitch,IMU Yaw,IMU Roll,Time\n");
+	
+	for(i = 1; i < NUMBER_OF_MEASURMENTS; i++){
+		 
+		Delta_time = (double)((Time_stamp[i].tv_sec * 1000000 + Time_stamp[i].tv_usec) - (Time_stamp[i - 1].tv_sec * 1000000 + Time_stamp[i - 1].tv_usec))/(double)1000000;
+		Run_time = (double)((Time_stamp[i].tv_sec * 1000000 + Time_stamp[i].tv_usec) - (Start_time.tv_sec * 1000000 + Start_time.tv_usec))/(double)1000000;
+		
+		//Delta_Angle_Expected = -atan(tan(2*PI*OMEGA*Run_time) - ((double)OMEGA/(double)HINGE_DISTANCE)*Delta_time*INCHS_PER_THREAD) - 2*PI*OMEGA*Run_time;
+		
+		
+		Cur_angle = atan((2*PI*OMEGA*Run_time*INCHS_PER_THREAD)/HINGE_DISTANCE);
+		Delta_Angle = Cur_angle - Prev_angle;
+		Prev_angle = Cur_angle;
+		
+		printf("%lf,%lf,%lf,%lf,%lf,%lf,%lf,%lf,%lf\n",(Delta_Angle*180)/PI, (double)(IMU_pitch_data[i] - IMU_pitch_data[i-1] )/(double)16, (double)(IMU_roll_data[i] - IMU_roll_data[i-1] )/(double)16, (double)(IMU_yaw_data[i] - IMU_yaw_data[i-1])/(double)16, (Cur_angle*180)/PI, (double)IMU_pitch_data[i]/(double)16, (double)IMU_roll_data[i]/(double)16, (double)IMU_yaw_data[i]/(double)16, Run_time);
+		
+		/*
 		printf("%d,", IMU_pitch_data[i]);
 		printf("%d,", IMU_roll_data[i]);
 		printf("%d,", IMU_yaw_data[i]);
 		
 		printf("%d,", (int) Time_stamp[i].tv_sec);
 		printf("%d,", (int) Time_stamp[i].tv_usec);
+		*/
 	}
 	
 }
@@ -269,7 +294,7 @@ void Run_Static_Test(void * Contact_Addr, void * Contact_DDR)
 			usleep(3000*1000);
 			Get_Orientation(Current_Euler_data);
 			
-			printf("%lf,%d,%d,%d\n",Angle_step,(Current_Euler_data[0] - Prev_Euler_data[0]),(Current_Euler_data[1] - Prev_Euler_data[1]),(Current_Euler_data[2] - Prev_Euler_data[2]));
+			printf("%lf,%lf,%lf,%lf\n",Angle_step, (float)(Current_Euler_data[0] - Prev_Euler_data[0])/(float)16, (float)(Current_Euler_data[1] - Prev_Euler_data[1])/(float)16, (float)(Current_Euler_data[2] - Prev_Euler_data[2])/(float)16);
 			
 			Prev_Euler_data[0] = Current_Euler_data[0];
 			Prev_Euler_data[1] = Current_Euler_data[1];

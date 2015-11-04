@@ -87,13 +87,13 @@ uint8_t SDA_READ(void *dataReg){
 //I2C_Delay_Short
 //Provides a ~1ms (or whatever is specified in the header file) delay
 void I2C_Delay_Short(){
-	usleep( 1000 );
+	usleep( 100 );
 }
 
 //I2C_Delay_Long
 //Provides a ~5ms (or whatever is specified in the header file) delay
 void I2C_Delay_Long(){
-	usleep( 2000 );
+	usleep( 200 );
 }
 
 

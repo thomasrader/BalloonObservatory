@@ -9,13 +9,15 @@
 #define CONTACT_SWITCH_DDR_ADDR	0x4
 #define STOP	0x0
 
-#define TEST_SPEED 50
-#define DELAY_BETWEEN_MEASURMENTS (1000*100)
-#define NUMBER_OF_MEASURMENTS 50
+#define TEST_SPEED 10
+#define DELAY_BETWEEN_MEASURMENTS (1000*1000)
+#define NUMBER_OF_MEASURMENTS 75
 
-#define HINGE_DISTANCE 			2.5		//Distance from threaded rod to hinge in [in]
-#define THREADS_PER_INCH 		32		//Thread count per inch of the threaded rod
-#define COUNTS_PER_360 		4096		//servo encoder counter per full revolution 
+#define HINGE_DISTANCE 			((double)2.5)		//Distance from threaded rod to hinge in [in]
+#define THREADS_PER_INCH 		32					//Thread count per inch of the threaded rod
+#define INCHS_PER_THREAD		((double)0.03125)
+#define COUNTS_PER_360 		4096					//servo encoder counter per full revolution 
+#define OMEGA							((double)0.19)	//Turn rate of servo in rev/sec
 
 #define PI 	3.14159265354252		//Yummy
 
